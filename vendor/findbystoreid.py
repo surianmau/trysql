@@ -1,30 +1,30 @@
-from django.shortcuts import render
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-# Create your views here.
 import psycopg2
 
-
 @api_view(['GET'])
-def apitry(request):
-    franchiseId = request.GET.get('franchiseId')
-    print(franchiseId,"franchiseId")
+def findbystore(request):
+    storeid = request.GET.get("storeid")
     try:
         connection = psycopg2.connect(user = "postgres",
                                       password = "jasmine123",
                                       host = "18.191.197.42",
                                       port = "5432",
                                       database = "grocsosv1")
-        # Print PostgreSQL Connection properties
-
-
         cursor = connection.cursor()
+        create_table_query = '''SELECT distinct t.categoryid1 as Id, c.name categoryName, c.image as categoryImage,
+	(select 1  where exists ( 
+			select * from productcategorytree t1 
+			where t.categoryid1 = t1.categoryid1 
+			and t1.categoryid2 is not null)
+	)   as "Subcategory Exists"
+	 from Inventory i
+	 inner join Product p on (p.id =i.productid) 
+	 inner join productcategorytree t on (t.categoryid= p.categoryid)
+	 inner join productcategory c on (c.id = t.categoryid1)
+	 where i.storeid = %s order by c.name'''
 
-        create_table_query = '''select franchiseid, id as storeid, storecode,name as storeName,chainName,image as storeImage, description as shortDesc
-	from Store WHERE franchiseid = %s'''
-
-        cursor.execute(create_table_query,(franchiseId,))
+        cursor.execute(create_table_query,(storeid,))
         rows = cursor.fetchall()
         a= []
         for i in rows:
@@ -37,4 +37,4 @@ def apitry(request):
 
     except (Exception, psycopg2.Error) as error :
         print ("Error while connecting to PostgreSQL", error)
-        return Response('bye')
+        return Response("e")
