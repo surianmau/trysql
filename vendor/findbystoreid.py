@@ -8,7 +8,7 @@ def findbystore(request):
     try:
         connection = psycopg2.connect(user = "postgres",
                                       password = "jasmine123",
-                                      host = "18.191.197.42",
+                                      host = "3.23.172.82",
                                       port = "5432",
                                       database = "grocsosv1")
         cursor = connection.cursor()

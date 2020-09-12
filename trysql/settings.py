@@ -64,7 +64,7 @@ DATABASES = {
         'NAME': 'grocsosv1',
         'USER': 'postgres',
         'PASSWORD': 'jasmine123',
-        'HOST': '18.191.197.42',
+        'HOST': '3.23.172.82',
         'PORT': '5432'
     }
 }
